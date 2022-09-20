@@ -60,6 +60,7 @@ class DavidsonEigenSolver {
   inline static MatrixT eye(size_t n) { return eye(n, n); }
 
   void run() {
+    // https://joshuagoings.com/2013/08/23/davidsons-method/
     auto t = eye(n_, k_);
     auto V = zeros(n_, n_);
     auto I = eye(n_);
