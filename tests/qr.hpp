@@ -1,0 +1,40 @@
+#pragma once
+
+#include <gtest/gtest.h>
+
+#include <iostream>
+
+#include "src/davidson.hpp"
+#include "tests/asserts.hpp"
+
+class QRTest : public ::testing::Test {};
+
+TEST_F(QRTest, real_diag_5x3) {
+  Eigen::MatrixXd A(5, 3), Q_true(5, 3), R_true(3, 3);
+  A << 0.6658282962715931, 0.4480338554242089, 0.13243643459275756,
+      0.36257924353547866, 0.2187175317577904, 0.11850763722730562,
+      0.5869845581616577, 0.49685251562448873, 0.4541131354907514,
+      0.9840900177594992, 0.42019070618269816, 0.35968131265576797,
+      0.9390988189361871, 0.9180422610882745, 0.22793219566496936;
+  Q_true << -0.40008044133517684, -0.05055137690910206, 0.3511854529478212,
+      -0.21786527335191264, -0.09295495048700324, 0.033392139262275786,
+      -0.3527051079103697, 0.21928874241038512, -0.8842397367094917,
+      -0.5913163661313744, -0.7015069731100173, -0.014239042145910574,
+      -0.5642822211690414, 0.6697793290350531, 0.3057304047294255;
+  R_true << -1.6642360572527453, -1.1686435252694285, -0.5802754808470625, 0.0,
+      0.3860935769203003, -0.017783493126004298, 0.0, 0.0, -0.28651362150595855;
+
+  auto [Q_pred, R_pred] = davidson::detail::QR(A);
+  ASSERT_MATRIX_EQ(Q_pred, Q_true);
+  ASSERT_MATRIX_EQ(R_pred, R_true);
+}
+
+TEST_F(QRTest, complex_diag_10x7) {
+  auto n{10};
+  auto m{7};
+  Eigen::MatrixXcd A(n, m), Q_true(n, m), R_true(m, m);
+  A = Eigen::MatrixXcd::Random(n, m);
+  auto [Q_pred, R_pred] = davidson::detail::QR(A);
+  //   ASSERT_MATRIX_EQ(Q_pred, Q_true);
+  //   ASSERT_MATRIX_EQ(R_pred, R_true);
+}
